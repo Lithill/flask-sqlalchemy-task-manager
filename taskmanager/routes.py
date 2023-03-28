@@ -27,10 +27,17 @@ def add_category():
 
 @app.route("/edit_category/<int:category_id>", methods=["GET", "POST"])
 def edit_category(category_id):
+    # query db, try to find specified record using data provided
+    # if no match is found, return 404 error page
     category = Category.query.get_or_404(category_id)
     if request.method == "POST":
+        # update category_name for our cat variable, set it equal to forms
+        # name-attribute of category_name
         category.category_name = request.form.get("category_name")
+        # commit session to db
         db.session.commit()
+        # if all successful, redirect back to categories func which
+        # displays cards again
         return redirect(url_for("categories"))
     return render_template("edit_category.html", category=category)
 
@@ -66,7 +73,7 @@ def edit_task(task_id):
     categories = list(Category.query.order_by(Category.category_name).all())
     if request.method == "POST":
         task.task_name = request.form.get("task_name")
-        task.task_description = request.form.get("task_description")
+        task.task_description = request.form.get("task_description"),
         task.is_urgent = bool(True if request.form.get("is_urgent") else False)
         task.due_date = request.form.get("due_date")
         task.category_id = request.form.get("category_id")
